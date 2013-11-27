@@ -83,7 +83,7 @@ service sendmail restart
 #install ruby
 mkdir /tmp/ruby && cd /tmp/ruby
 curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz | tar xz
-cd /tmp/ruby-2.0.0-p247
+cd /tmp/ruby/ruby-2.0.0-p247
 ./configure --prefix=/usr/local/
 make && make install
 
