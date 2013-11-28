@@ -1,6 +1,8 @@
 #!/bin/sh
 SOURCE_HOME=/vendor
 
+PATH=$PATH:/usr/local/bin:
+
 #DO A GLOBAL FIND AND REPLACE ON THE STRINGS BELOW WITH THEIR APPROPRIATE VALUES 
 #email address
 #GIT_EMAIL
@@ -60,10 +62,10 @@ EOF
 yum-config-manager --enable epel --enable PUIAS_6_computational --enable rhel-6-server-optional-rpms
 
 yum -y update
-yum -y groupinstall 'Development Tools'
+yum -y groupinstall "Development tools"
 yum -y install vim-enhanced readline readline-devel ncurses-devel gdbm-devel glibc-devel tcl-devel openssl-devel curl-devel expat-devel db4-devel byacc sqlite-devel gcc-c++ \
 libyaml libyaml-devel libffi libffi-devel libxml2 libxml2-devel libxslt libxslt-devel libicu libicu-devel system-config-firewall-tui python-devel redis sudo wget crontabs \
-logwatch logrotate perl-Time-HiRes git sendmail-cf redis redis-devel nginx
+logwatch logrotate perl-Time-HiRes git sendmail-cf redis redis-devel nginx mysql-devel mysql-server
 
 
 cd /tmp
@@ -89,7 +91,7 @@ make && make install
 
 
 #install bundler gem 
-gem install bundler --no-ri --no-rdoc
+gem install bundler  --no-ri --no-rdoc
 
 
 #create user for git 
@@ -256,7 +258,7 @@ test: &test
 EOF
 
 
-gem install charlock_holmes --version '0.6.9.4'
+gem install  charlock_holmes --version '0.6.9.4'
 
 mkdir -p /home/git/repositories/root
 
@@ -282,13 +284,15 @@ service gitlab start
 
 chkconfig nginx on
 mkdir /etc/nginx/sites-{available,enabled}
-cp $SOURCE_HOME/gitlab-ssl /etc/nginx/sites-available/gitlab
+wget -O /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/web-server/nginx/gitlab-ssl
 ln -sf /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 sed -i 's/include \/etc\/nginx\/conf.d\/\*.conf;.*/include \/etc\/nginx\/sites-enabled\/*;/' /etc/nginx/nginx.conf
 
 groupmems -g git -a nginx 
 chmod -R g+rx /home/git/
-service nginx start
+
+
+
 cd /etc/nginx
 
 CC=SSL_CC
@@ -298,7 +302,7 @@ ORGNAME="SSL_ORG"
 OU="SSL_OU"
 MACHNAME=SERVER_FQDN
 EMAIL=ADMIN_EMAIL
-umask 77;echo "$CC 
+umask 77;echo "$CC
 $STATE
 $CITY
 $ORGNAME
